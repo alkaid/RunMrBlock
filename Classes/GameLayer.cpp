@@ -1,6 +1,7 @@
 #include "GameLayer.h"
 #include "R.h"
 #include "Constants.h"
+#include "AdmobHelper.h"
 
 USING_NS_CC;
 
@@ -136,6 +137,11 @@ bool GameLayer::init()
 			return true;
 		};
 		this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(contactListener, this);
+
+		if (AdmobHelper::isAdShowing)
+		{
+			AdmobHelper::hideAd();
+		}
 		bRet = true;
 	} while (0);
 	return bRet;
@@ -348,11 +354,10 @@ void GameLayer::gameOver()
 	}
 	_status = end;
 	this->unscheduleUpdate();
-	int bestScore = UserDefault::getInstance()->getIntegerForKey("best_score");
+	int bestScore = UserDefault::getInstance()->getIntegerForKey(Constants::PROP_INT_BEST_SCORE);
 	if (_score > bestScore){
-		UserDefault::getInstance()->setIntegerForKey("best_score", _score);
+		UserDefault::getInstance()->setIntegerForKey(Constants::PROP_INT_BEST_SCORE, _score);
 		_isNewRecord = true;
-		UserDefault::getInstance()->setBoolForKey("is_new_record", true);
 	}
 	//_bird->die();
 	//_bird->setRotation(-90);
@@ -360,6 +365,7 @@ void GameLayer::gameOver()
 	////auto fadeOut = FadeOut::create(1.5);
 	////_bird->runAction(fadeOut);
 	_delegate->onGameEnd(_score,bestScore);
+	AdmobHelper::showAd();
 }
 
 void GameLayer::checkHit()

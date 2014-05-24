@@ -37,4 +37,7 @@ namespace Constants{
 	static const int TAG_HERO_RIGHT = 12;
 	static const int TAG_WALL_LEFT = 21;
 	static const int TAG_WALL_RIGHT = 22;
+
+	static const char* PROP_INT_BEST_SCORE = "PROP_INT_BEST_SCORE";
+	static const char* PROP_BOOL_FIRST_TIME = "PROP_BOOL_FIRST_TIME";
 }

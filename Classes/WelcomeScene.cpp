@@ -2,6 +2,7 @@
 #include "Background.h"
 #include "GameScene.h"
 #include "R.h"
+#include "AdmobHelper.h"
 
 USING_NS_CC;
 
@@ -80,6 +81,9 @@ bool WelcomeLayer::init()
 		this->addChild(menu,1);
 
 		this->scheduleUpdate();
+
+		AdmobHelper::showAd();
+
 		bRet = true;
 	} while (0);
 	return bRet;
