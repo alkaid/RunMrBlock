@@ -24,11 +24,18 @@
  ****************************************************************************/
 
 #import <UIKit/UIKit.h>
+#import "GADBannerViewDelegate.h"
 
+@class GADBannerView;
+@class GADRequest;
 
-@interface RootViewController : UIViewController {
-
+@interface RootViewController : UIViewController<GADBannerViewDelegate> {
+    GADBannerView* bannerView_;
 }
 - (BOOL) prefersStatusBarHidden;
+
+@property(nonatomic, strong) GADBannerView *adBanner;
+
+- (GADRequest *)request;
 
 @end

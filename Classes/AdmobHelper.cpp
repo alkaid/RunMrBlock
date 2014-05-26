@@ -41,6 +41,21 @@ void AdmobHelper::showAd()
 
 }
 
+#elif (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+#include "AdmobUtil.h"
+void AdmobHelper::hideAd()
+{
+    AdmobUtil::hideAd();
+	isAdShowing = false;
+}
+
+
+void AdmobHelper::showAd()
+{
+    AdmobUtil::showAd();
+	isAdShowing = true;
+    
+}
 
 #else
 
