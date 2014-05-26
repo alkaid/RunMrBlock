@@ -11,12 +11,16 @@ GameLayer::GameLayer()
 	_rightWall = nullptr;
 	_leftHero = nullptr;
 	_rightHero = nullptr;
+    _leftHeroSpeed=0;
+    _rightHeroSpeed=0;
 	_status = start;
 	_thornsUsed = nullptr;
 	_isNewRecord = false;
 	_score = 0;
 	_leftHeroSpeed = 0;
 	_rightHeroSpeed = 0;
+    _leftDt=0;
+    _rightDt=0;
 	_heroWidth = 0;
 	_touchMode = Point::ZERO;
 	_thornSpeed = Constants::ORIGIN_SPEED;
