@@ -968,7 +968,7 @@
 					"$(PROJECT_DIR)/ios",
 					"/Users/macbook/Projects/cocos2d/IOS/GoogleMobileAdsSdkiOS-6.9.2",
 				);
-				OTHER_LDFLAGS = "-objC";
+				OTHER_LDFLAGS = "-ObjC";
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1003,7 +1003,7 @@
 					"$(PROJECT_DIR)/ios",
 					"/Users/macbook/Projects/cocos2d/IOS/GoogleMobileAdsSdkiOS-6.9.2",
 				);
-				OTHER_LDFLAGS = "-objC";
+				OTHER_LDFLAGS = "-ObjC";
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";

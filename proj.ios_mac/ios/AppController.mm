@@ -27,6 +27,14 @@
 #import "cocos2d.h"
 #import "AppDelegate.h"
 #import "RootViewController.h"
+#import "GADRequest.h"
+extern "C"
+{
+#import "GADBannerView.h"
+}
+#import "AdmobInstance.h"
+#import "AdmobUtil.h"
+
 
 @implementation AppController
 
@@ -78,9 +86,58 @@ static AppDelegate s_sharedApplication;
     cocos2d::Director::getInstance()->setOpenGLView(glview);
 
     cocos2d::Application::getInstance()->run();
+    
+    //Admob
+    // Initialize the banner at the bottom of the screen.
+    CGPoint origin = CGPointMake(0.0,0.0);
+//                                 _viewController.view.frame.size.height -
+//                                 CGSizeFromGADAdSize(kGADAdSizeBanner).height);
+    
+    // Use predefined GADAdSize constants to define the GADBannerView.
+    self.adBanner = [[GADBannerView alloc] initWithAdSize:kGADAdSizeBanner origin:origin];
+//    self.adBanner = [[GADBannerView alloc] initWithAdSize:kGADAdSizeBanner];
+    
+    // Note: Edit SampleConstants.h to provide a definition for kSampleAdUnitID before compiling.
+    self.adBanner.adUnitID = @"ca-app-pub-5231627992778382/3798693156";
+//    self.adBanner.backgroundColor=[UIColor whiteColor];
+    self.adBanner.delegate = self;
+    self.adBanner.rootViewController = _viewController;
+    [_viewController.view addSubview:self.adBanner];
+    [self.adBanner loadRequest:[self request]];
+    
+    [AdmobInstance setBannerView:self.adBanner];
+
 
     return YES;
 }
+
+#pragma mark GADRequest generation
+
+- (GADRequest *)request {
+    GADRequest *request = [GADRequest request];
+    
+    // Make the request for a test ad. Put in an identifier for the simulator as well as any devices
+    // you want to receive test ads.
+    request.testDevices = @[
+                            // TODO: Add your device/simulator test identifiers here. Your device identifier is printed to
+                            // the console when the app is launched.
+                            GAD_SIMULATOR_ID
+                            ,@"d97b563de7ee0bbfdbcbe0a5b316cd6a9500062d"
+                            ];
+    return request;
+}
+
+#pragma mark GADBannerViewDelegate implementation
+
+// We've received an ad successfully.
+- (void)adViewDidReceiveAd:(GADBannerView *)adView {
+    NSLog(@"Received ad successfully");
+}
+
+- (void)adView:(GADBannerView *)view didFailToReceiveAdWithError:(GADRequestError *)error {
+    NSLog(@"Failed to receive ad with error: %@", [error localizedFailureReason]);
+}
+
 
 
 - (void)applicationWillResignActive:(UIApplication *)application {
@@ -134,6 +191,7 @@ static AppDelegate s_sharedApplication;
 
 
 - (void)dealloc {
+    _adBanner.delegate = nil;
     [window release];
     [super dealloc];
 }
