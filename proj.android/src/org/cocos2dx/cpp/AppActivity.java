@@ -48,7 +48,7 @@ import com.google.android.gms.ads.AdView;
 public class AppActivity extends Cocos2dxActivity {
 	private static AppActivity _appActiviy;
 	private AdView adView;
-	private static final String AD_UNIT_ID = "ca-app-pub-5231627992778382/1328394757";
+	private static final String AD_UNIT_ID = "ca-app-pub-5231627992778382/8118997954";
 	private static final String TEST_DEVICE_ID="3E560C3A3E4C7BEB48FA62BAE4DB67E7";	//galaxy s3
 
 	// Helper get display screen to avoid deprecated function use

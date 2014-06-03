@@ -2,8 +2,10 @@
 #include "R.h"
 #include "Constants.h"
 #include "AdmobHelper.h"
+#include "SimpleAudioEngine.h"
 
 USING_NS_CC;
+using namespace CocosDenshion;
 
 GameLayer::GameLayer()
 {
@@ -68,6 +70,7 @@ bool GameLayer::init()
 		groundBody->setContactTestBitmask(-1);
 		groundNode->setPhysicsBody(groundBody);
 		groundNode->setPosition(origin.x + wallWidth/2, origin.y + visibleSize.height / 2);
+		groundNode->setTag(Constants::TAG_WALL_LEFT);
 		this->addChild(groundNode);
 		//init Hero
 		_leftHero = LeftHero::creat();
@@ -146,6 +149,8 @@ bool GameLayer::init()
 		{
 			AdmobHelper::hideAd();
 		}
+
+		SimpleAudioEngine::getInstance()->playBackgroundMusic(R::a_bg_playing,true);
 		bRet = true;
 	} while (0);
 	return bRet;
@@ -357,6 +362,8 @@ void GameLayer::gameOver()
 		return;
 	}
 	_status = end;
+	SimpleAudioEngine::getInstance()->playEffect(R::a_thorn);
+	SimpleAudioEngine::getInstance()->stopBackgroundMusic();
 	this->unscheduleUpdate();
 	int bestScore = UserDefault::getInstance()->getIntegerForKey(Constants::PROP_INT_BEST_SCORE);
 	if (_score > bestScore){
@@ -532,6 +539,10 @@ bool GameLayer::collision(Node* hero, Node* thorn)
 		case Constants::TAG_THORN_MIDDLE_BIG:
 			gameOver();
 			break;
+		case Constants::TAG_WALL_LEFT:
+		case Constants::TAG_WALL_RIGHT:
+			SimpleAudioEngine::getInstance()->playEffect(R::a_wall);
+			return true;
 		default:
 			return true;
 		}
@@ -556,6 +567,10 @@ bool GameLayer::collision(Node* hero, Node* thorn)
 		case Constants::TAG_THORN_MIDDLE_BIG:
 			gameOver();
 			break;
+		case Constants::TAG_WALL_LEFT:
+		case Constants::TAG_WALL_RIGHT:
+			SimpleAudioEngine::getInstance()->playEffect(R::a_wall);
+			return true;
 		default:
 			return true;
 		}

@@ -1,8 +1,10 @@
 #include "LoadingScene.h"
 #include "R.h"
 #include "WelcomeScene.h"
+#include "SimpleAudioEngine.h"
 
 USING_NS_CC;
+using namespace CocosDenshion;
 
 Scene* LoadingLayer::scene()
 {
@@ -25,6 +27,10 @@ bool LoadingLayer::init()
 		//Texture2D::PVRImagesHavePremultipliedAlpha(true);
 		TextureCache::getInstance()->addImageAsync(R::main_png, [](Texture2D* texture){
 			CCSpriteFrameCache::getInstance()->addSpriteFramesWithFile(R::main_plist);
+			//load audio
+			SimpleAudioEngine::getInstance()->preloadBackgroundMusic(R::a_bg_playing);
+			SimpleAudioEngine::getInstance()->preloadEffect(R::a_thorn);
+			SimpleAudioEngine::getInstance()->preloadEffect(R::a_wall);
 			//TransitionScene* scene = TransitionScene::create(1.0, WelcomeLayer::scene());
 			//TODO 注意 此处不能用TransitionScene::create(),会导致第二个scene的Menu点击无效
 			TransitionScene* scene = TransitionFade::create(1.0, WelcomeLayer::scene());

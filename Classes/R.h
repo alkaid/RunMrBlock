@@ -34,4 +34,11 @@ namespace R{
 	static const char* btn_rate = "btn_rate.png";
 	static const char* btn_play = "btn_play.png";
 	static const char* btn_rank = "btn_rank.png";
+
+
+	//---------------audio--------------------------
+	static const char* a_bg_playing = "bg_playing.wav";
+	static const char* a_thorn = "thorn.wav";
+	static const char* a_wall = "wall.wav";
+
 }
