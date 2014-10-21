@@ -1,4 +1,5 @@
 #pragma once
+#include "AppMacro.h"
 
 class AdmobHelper
 {

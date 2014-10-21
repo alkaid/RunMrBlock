@@ -27,11 +27,11 @@ bool GameScene::init()
 		this->getPhysicsWorld()->setGravity(Vect(0, 0));
 		/*Background* backgroundLayer = Background::create();
 		this->addChild(backgroundLayer);*/
-		auto bg = LayerColor::create(Color4B(0, 0, 0, 255));
+		auto bg = LayerColor::create(Color4B(130, 217, 212, 255));
 		this->addChild(bg);
-		GameLayer* gameLayer = GameLayer::create();
 		StatusLayer* statusLayer = StatusLayer::create();
-		gameLayer->setDelegate(statusLayer);
+		GameLayer* gameLayer = GameLayer::create(statusLayer);
+		//gameLayer->setDelegate(statusLayer);
 		gameLayer->setPhyWorld(this->getPhysicsWorld());
 		this->addChild(gameLayer);
 		this->addChild(statusLayer);

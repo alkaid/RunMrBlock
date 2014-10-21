@@ -2,12 +2,23 @@
 
 namespace R{
 
-	static const char* splash = "splash.png";
+	static const char* splash = "alkaid_logo.png";
 	static const char* main_png = "main.pvr.ccz";
 	static const char* main_plist = "main.plist";
+	static const char* lang_png = "lang.pvr.ccz";
+	static const char* lang_plist = "lang.plist";
 	static const char* number_l = "fonts/number_l.png";
 	static const char* number_m = "fonts/number_m.png";
 	static const char* number_s = "fonts/number_s.png";
+
+	//guide
+	static const char* guide_left_hand = "guide_left_hand.png";
+	static const char* guide_left_high = "guide_left_high.png";
+	static const char* guide_txt_1 = "guide_txt_1.png";
+	static const char* guide_txt_2 = "guide_txt_2.png";
+	static const char* guide_txt_3 = "guide_txt_3.png";
+	static const char* guide_txt_4 = "guide_txt_4.png";
+	static const char* guide_txt_5 = "guide_txt_5.png";
 
 	static const char* text_game_name = "text_game_name.png";
 	static const char* text_over = "text_over.png";
@@ -34,6 +45,11 @@ namespace R{
 	static const char* btn_rate = "btn_rate.png";
 	static const char* btn_play = "btn_play.png";
 	static const char* btn_rank = "btn_rank.png";
+	static const char* btn_share = "btn_share.png";
+
+	//---------------particle------------------------------
+	static const char* particle_left_hero_dead = "left_hero_dead.plist";
+	static const char* particle_right_hero_dead = "right_hero_dead.plist";
 
 
 	//---------------audio--------------------------
@@ -41,4 +57,11 @@ namespace R{
 	static const char* a_thorn = "thorn.wav";
 	static const char* a_wall = "wall.wav";
 
+	//---------------strings-----------------------------
+	static const char* strings_xml = "strings.xml";
+	namespace string{
+		static const char* app_name = "app_name";
+		static const char* share_intro = "share_intro";
+		static const char* share_score = "share_score";
+	}
 }

@@ -1,9 +1,24 @@
 #pragma once
-#include "cocos2d.h"
+#include "AppMacro.h"
 #include "BaseLayer.h"
-#include "GameLayer.h"
 
 USING_NS_CC;
+
+enum GameStatus
+{
+	guide, ready, start, end
+};
+
+class StatusDelegate
+{
+public:
+	virtual void onGameStart() = 0;
+	virtual void onGameReady() = 0;
+	virtual void onGameEnd(int curScore, int bestScore) = 0;
+	virtual void onGamePlaying(int score) = 0;
+	virtual void onNextGuide() = 0;
+	CC_SYNTHESIZE(GameStatus, _status, Status);
+};
 
 class StatusLayer:public BaseLayer,public StatusDelegate
 {
@@ -17,7 +32,10 @@ public:
 	virtual void onGamePlaying(int score);
 	virtual void onGameReady();
 	virtual void onGameEnd(int curScore, int bestScore);
+	virtual void onNextGuide();
 private:
+	static const int GUIDE_STEPS;
+	int _currentGuideStep;
 	bool isNewRecord;
 	int currentScore;
 	LabelAtlas* _scoreLabel;
@@ -29,6 +47,17 @@ private:
 	Sprite* whiteSprite;
 	int bestScore;
 	int tmpScore;
+	//guide
+	ClippingNode* _clip;
+	DrawNode* _stencil;
+	Sprite* _guideLeftHand;
+	//Sprite* _guideLeftHigh;
+	Sprite* _guideRightHand;
+	Sprite* _guideTxt1;
+	Sprite* _guideTxt2;
+	Sprite* _guideTxt3;
+	Sprite* _guideTxt4;
+	Sprite* _guideTxt5;
 
 	/*void setBlinkSprite();
 
@@ -55,8 +84,6 @@ private:
 	void refreshScoreExecutor(float dt);
 
 	std::string getMedalsName(int score);
-
-	
 
 	
 };

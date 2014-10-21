@@ -166,7 +166,7 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>texture</filename>
+            <filename>texture2</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

@@ -15,7 +15,6 @@ GameLayer::GameLayer()
 	_rightHero = nullptr;
     _leftHeroSpeed=0;
     _rightHeroSpeed=0;
-	_status = start;
 	_thornsUsed = nullptr;
 	_isNewRecord = false;
 	_score = 0;
@@ -26,6 +25,9 @@ GameLayer::GameLayer()
 	_heroWidth = 0;
 	_touchMode = Point::ZERO;
 	_thornSpeed = Constants::ORIGIN_SPEED;
+	_isLeftCollisionWall = false;
+	_isRightCollisionWall = false;
+	_guideStep = 0;
 }
 
 GameLayer::~GameLayer()
@@ -36,12 +38,13 @@ GameLayer::~GameLayer()
 	CC_SAFE_RELEASE_NULL(_thornPool);
 }
 
-bool GameLayer::init()
+bool GameLayer::init(StatusDelegate* delegate)
 {
 	bool bRet = false;
 	do
 	{
 		CC_BREAK_IF(!BaseLayer::init());
+		_delegate = delegate;
 		//init land
 		_leftWall = Land::create();
 		_leftWall->retain();
@@ -145,6 +148,22 @@ bool GameLayer::init()
 		};
 		this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(contactListener, this);
 
+		//判断是否需要新手指引
+		bool isFirstTime = UserDefault::getInstance()->getBoolForKey(Constants::PROP_BOOL_FIRST_TIME, true);
+		UserDefault::getInstance()->setBoolForKey(Constants::PROP_BOOL_FIRST_TIME, false);
+		//test
+		isFirstTime = true;
+		//加载新手指引
+		if (isFirstTime)
+		{
+			++_guideStep;
+			_delegate->onNextGuide();
+		}
+		else
+		{
+			_delegate->onGameStart();
+		}
+
 		if (AdmobHelper::isAdShowing)
 		{
 			AdmobHelper::hideAd();
@@ -160,7 +179,7 @@ void GameLayer::update(float dt)
 {
 	_leftWall->scroll(_thornSpeed);
 	_rightWall->scroll(_thornSpeed);
-	if (_status == start){
+	if (_delegate->getStatus() == start){
 		Ref* obj = nullptr;
 		//滚动障碍物
 		CCARRAY_FOREACH(_thornsUsed, obj){
@@ -235,36 +254,32 @@ void GameLayer::createThorns()
 		PhysicsShape* s1 = nullptr;
 		PhysicsShape* s2 = nullptr;
 		float wallWidth = _leftWall->getOneLandSize().width;
-		Point* plb1 = nullptr;
-		Point* plb2 = nullptr;
-		switch (type)
-		{
-		case Constants::TAG_THORN_LEFT_BIG:
+		if (type == Constants::TAG_THORN_LEFT_BIG){
 			thorn1 = Sprite::createWithSpriteFrameName(R::thorn1);
 			//y += thorn1->getContentSize().width / 2;
-			y += _thornsHeights[type]/2 + Constants::THORN_SPACING;
+			y += _thornsHeights[type] / 2 + Constants::THORN_SPACING;
 			thornNode->setPosition(origin.x + wallWidth + thorn1->getContentSize().width / 2, y);
-			plb1 = new Point[3]{
-					Point(-254.5000, -121.0000),
+			Point plb1[] = {
+				Point(-254.5000, -121.0000),
 					Point(-254.5000, -9.0000),
 					Point(254.5000, 121.0000)
 			};
 			s1 = PhysicsShapePolygon::create(plb1, 3, PhysicsMaterial(0, 0, 0));
-			break;
-		case Constants::TAG_THORN_RIGHT_BIG:
+		}
+		else if (type == Constants::TAG_THORN_RIGHT_BIG){
 			thorn1 = Sprite::createWithSpriteFrameName(R::thorn1);
 			thorn1->setFlippedX(true);
 			//y += thorn1->getContentSize().width / 2;
 			y += _thornsHeights[type]/2 + Constants::THORN_SPACING;
 			thornNode->setPosition(origin.x + visibleSize.width - wallWidth - thorn1->getContentSize().width / 2, y);
-			plb1 = new Point[3]{
+			Point plb1[] = {
 				Point(254.5000, -9.0000),
 					Point(254.5000, -121.0000),
 					Point(-254.5000, 121.0000)
 			};
 			s1 = PhysicsShapePolygon::create(plb1, 3, PhysicsMaterial(0, 0, 0));
-			break;
-		case Constants::TAG_THORN_SIDE_SMALL:
+		}
+		else if (type == Constants::TAG_THORN_SIDE_SMALL){
 			thorn1 = Sprite::createWithSpriteFrameName(R::thorn2);
 			thorn2 = Sprite::createWithSpriteFrameName(R::thorn2);
 			thorn2->setFlippedX(true);
@@ -273,52 +288,46 @@ void GameLayer::createThorns()
 			//y += thorn1->getContentSize().width / 2;
 			y += _thornsHeights[type]/2 + Constants::THORN_SPACING;
 			thornNode->setPosition(origin.x + wallWidth + thorn1->getContentSize().width / 2, y);
-			plb1 = new Point[3]{
+			Point plb1[] ={
 					Point(-128.0000, -81.0000),
 					Point(-128.0000, -6.0000),
 					Point(128.0000, 81.0000)
 			};
 			s1 = PhysicsShapePolygon::create(plb1, 3, PhysicsMaterial(0, 0, 0));
-			plb2 = new Point[3]{
+			Point plb2[] = {
 					Point(128.0000, -6.0000),
 					Point(128.0000, -81.0000),
 					Point(-128.0000, 81.0000)
 			};
 			s2 = PhysicsShapePolygon::create(plb2, 3, PhysicsMaterial(0, 0, 0), Point(visibleSize.width - thorn1->getContentSize().width - _leftWall->getOneLandSize().width * 2, 0));
-			break;
-		case Constants::TAG_THORN_MIDDLE_SMALL:
+		}
+		else if (type == Constants::TAG_THORN_MIDDLE_SMALL){
 			thorn1 = Sprite::createWithSpriteFrameName(R::thorn3);
 			//y += thorn1->getContentSize().width / 2;
 			y += _thornsHeights[type]/2 + Constants::THORN_SPACING;
 			thornNode->setPosition(origin.x + visibleSize.width / 2, y );
-			plb1 = new Point[4]{
+			Point plb1[] = {
 					Point(0.0000, -73.0000),
 					Point(-152.0000, 0.0000),
 					Point(0.0000, 74.0000),
 					Point(152.0000, 1.0000),
 			};
 			s1 = PhysicsShapePolygon::create(plb1, 4, PhysicsMaterial(0, 0, 0));
-			break;
-		case Constants::TAG_THORN_MIDDLE_BIG:
+		}
+		else if (type == Constants::TAG_THORN_MIDDLE_BIG){
 			thorn1 = Sprite::createWithSpriteFrameName(R::thorn4);
 			//y += thorn1->getContentSize().width / 2;
 			y += _thornsHeights[type]/2 + Constants::THORN_SPACING;
 			thornNode->setPosition(origin.x + visibleSize.width / 2, y);
-			plb1 = new Point[4]{
+			Point plb1[] = {
 					Point(-0.5000, 107.0000),
 					Point(218.5000, 1.0000),
 					Point(-0.5000, -106.0000),
 					Point(-218.5000, 0.0000),
 			};
 			s1 = PhysicsShapePolygon::create(plb1, 4, PhysicsMaterial(0, 0, 0));
-			break;
-		default:
-			break;
 		}
 		y += _thornsHeights[type]/2 ;
-
-		CC_SAFE_DELETE(plb1);
-		CC_SAFE_DELETE(plb2);
 		if (s1 != nullptr) body->addShape(s1);
 		if (s2 != nullptr) body->addShape(s2);
 		body->setDynamic(false);
@@ -357,11 +366,10 @@ void GameLayer::createThorns()
 
 void GameLayer::gameOver()
 {
-	if (_status==end)
+	if (_delegate->getStatus()==end)
 	{
 		return;
 	}
-	_status = end;
 	SimpleAudioEngine::getInstance()->playEffect(R::a_thorn);
 	SimpleAudioEngine::getInstance()->stopBackgroundMusic();
 	this->unscheduleUpdate();
@@ -370,6 +378,7 @@ void GameLayer::gameOver()
 		UserDefault::getInstance()->setIntegerForKey(Constants::PROP_INT_BEST_SCORE, _score);
 		_isNewRecord = true;
 	}
+
 	//_bird->die();
 	//_bird->setRotation(-90);
 	//_bird->stopAllActions();
@@ -399,7 +408,7 @@ void GameLayer::checkHit()
 
 void GameLayer::onTouchModeChanged(Point oldMode, Point newMode)
 {
-	if (_status==end)
+	if (_delegate->getStatus()==end)
 	{
 		return;
 	}
@@ -465,13 +474,42 @@ void GameLayer::onTouchModeChanged(Point oldMode, Point newMode)
 			_rightDt = 0;
 		}
 	}
+	//新手指引
+	if (_delegate->getStatus() == guide&&newMode == Point::ZERO){
+		if (_guideStep < 3){
+			_isLeftCollisionWall = _leftHero->getPositionX() <= origin.x + _leftWall->getOneLandSize().width + _leftHero->getContentSize().width / 2 + 5;
+			_isRightCollisionWall = _rightHero->getPositionX() >= origin.x + visibleSize.width - _rightWall->getOneLandSize().width - _rightHero->getContentSize().width / 2 - 5;
+		}
+		if (_guideStep == 1){
+			if (_isLeftCollisionWall){
+				_isRightCollisionWall=_isLeftCollisionWall = false;
+				++_guideStep;
+				_delegate->onNextGuide();
+			}
+		}
+		else if (_guideStep == 2){
+			if (_isRightCollisionWall){
+				_isRightCollisionWall = _isLeftCollisionWall = false;
+				++_guideStep;
+				_delegate->onNextGuide();
+			}
+		}
+		else if (_guideStep == 3){
+			if (_isLeftCollisionWall&&_isRightCollisionWall){
+				_isRightCollisionWall = _isLeftCollisionWall = false;
+				++_guideStep;
+				_delegate->onNextGuide();
+			}
+		}
+	}
 }
 
 void GameLayer::onHolding(float dt)
 {
-	if (_status == end){
+	if (_delegate->getStatus() == end){
 		return;
 	}
+	
 	_leftDt += dt;
 	_rightDt += dt;
 	float leftV0 = _leftHeroSpeed;
@@ -514,7 +552,10 @@ void GameLayer::onHolding(float dt)
 			_rightHero->setPositionX(origin.x + visibleSize.width / 2 + _heroWidth / 2);
 		}
 	}
-	
+	if (_delegate->getStatus() == guide&&_guideStep == 3){
+		_isLeftCollisionWall = _isLeftCollisionWall ? _isLeftCollisionWall : _leftHero->getPositionX() <= origin.x + _leftWall->getOneLandSize().width + _leftHero->getContentSize().width / 2;
+		_isRightCollisionWall = _isRightCollisionWall ? _isRightCollisionWall : _rightHero->getPositionX() >= origin.x + visibleSize.width - _rightWall->getOneLandSize().width - _rightHero->getContentSize().width / 2;
+	}
 }
 
 bool GameLayer::collision(Node* hero, Node* thorn)
@@ -525,18 +566,23 @@ bool GameLayer::collision(Node* hero, Node* thorn)
 		case Constants::TAG_HERO_RIGHT:
 			return true;
 		case Constants::TAG_THORN_LEFT_BIG:
+			leftHeroDead();
 			gameOver();
 			break;
 		case Constants::TAG_THORN_RIGHT_BIG:
+			leftHeroDead();
 			gameOver();
 			break;
 		case Constants::TAG_THORN_SIDE_SMALL:
+			leftHeroDead();
 			gameOver();
 			break;
 		case Constants::TAG_THORN_MIDDLE_SMALL:
+			leftHeroDead();
 			gameOver();
 			break;
 		case Constants::TAG_THORN_MIDDLE_BIG:
+			leftHeroDead();
 			gameOver();
 			break;
 		case Constants::TAG_WALL_LEFT:
@@ -553,18 +599,23 @@ bool GameLayer::collision(Node* hero, Node* thorn)
 		case Constants::TAG_HERO_LEFT:
 			return true;
 		case Constants::TAG_THORN_LEFT_BIG:
+			rightHeroDead();
 			gameOver();
 			break;
 		case Constants::TAG_THORN_RIGHT_BIG:
+			rightHeroDead();
 			gameOver();
 			break;
 		case Constants::TAG_THORN_SIDE_SMALL:
+			rightHeroDead();
 			gameOver();
 			break;
 		case Constants::TAG_THORN_MIDDLE_SMALL:
+			rightHeroDead();
 			gameOver();
 			break;
 		case Constants::TAG_THORN_MIDDLE_BIG:
+			rightHeroDead();
 			gameOver();
 			break;
 		case Constants::TAG_WALL_LEFT:
@@ -575,4 +626,28 @@ bool GameLayer::collision(Node* hero, Node* thorn)
 			return true;
 		}
 	}
+}
+
+void GameLayer::rightHeroDead()
+{
+	//爆炸
+	ParticleSystem* m_emitter1 = ParticleSystemQuad::create(R::particle_right_hero_dead);
+	m_emitter1->setAutoRemoveOnFinish(true);
+	ParticleBatchNode* batch = ParticleBatchNode::createWithTexture(m_emitter1->getTexture());
+	batch->addChild(m_emitter1);
+	m_emitter1->setPosition(_rightHero->getPosition());
+	_rightHero->setVisible(false);
+	this->addChild(batch);
+}
+
+void GameLayer::leftHeroDead()
+{
+	//爆炸
+	ParticleSystem* m_emitter1 = ParticleSystemQuad::create(R::particle_left_hero_dead);
+	m_emitter1->setAutoRemoveOnFinish(true);
+	ParticleBatchNode* batch = ParticleBatchNode::createWithTexture(m_emitter1->getTexture());
+	batch->addChild(m_emitter1);
+	m_emitter1->setPosition(_leftHero->getPosition());
+	_leftHero->setVisible(false);
+	this->addChild(batch);
 }

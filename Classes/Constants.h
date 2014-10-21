@@ -2,23 +2,23 @@
 
 namespace Constants{
 	/*玩家等待多少距离后开始*/
-	static const float PLAYER_READY_DISTANCE=1100;
+	static const float PLAYER_READY_DISTANCE=600;
 	/*Hero Y轴位置*/
 	static const float HERO_POSITION_Y = 350;
 	/*障碍之间的距离*/
-	static const float THORN_SPACING=380;
+	static const float THORN_SPACING=280;
 	/*障碍种类数量*/
 	static const int THORN_TYPE_COUNT = 5;
 	/*障碍池存放的最大障碍数量*/
 	static const int THORNS_POOL_MAX = THORN_TYPE_COUNT * 8;
 	/*障碍初始速度*/
-	static const float ORIGIN_SPEED = 10;
+	static const float ORIGIN_SPEED = 15;
 	/*每通过多少障碍后加速*/
 	static const int THRON_INTERVAL = 10;
 	/*每次迭代的加速度*/
 	static const float THRON_ACCELERATION = 2;
 	/*障碍速度上限*/
-	static const float THRON_SPEED_LIMIT = 30;
+	static const float THRON_SPEED_LIMIT = 50;
 
 
 	/*障碍回收时机：回收时距离Y轴原点的距离*/

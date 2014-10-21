@@ -1,9 +1,12 @@
 #pragma once
-#include "cocos2d.h"
+
+#include "AppMacro.h"
 #include "BaseLayer.h"
 #include "Land.h"
+#include <string>
 
 USING_NS_CC;
+
 
 class WelcomeLayer:public BaseLayer
 {

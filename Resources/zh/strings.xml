@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>app_name</key>
+	<string>别撞白块儿</string>
+	<key>share_intro</key>
+	<string>极其虐心，在速度极快的奔跑中躲避白块儿。和朋友比比看谁能跑到最后</string>
+	<key>share_score</key>
+	<string>我玩命儿躲过了%i个白块儿，你能超过我吗</string>
+</dict>
+</plist>

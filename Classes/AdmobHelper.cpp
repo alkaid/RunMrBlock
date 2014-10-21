@@ -1,5 +1,4 @@
 #include "AdmobHelper.h"
-#include "cocos2d.h"
 
 
 bool AdmobHelper::isAdShowing = true;

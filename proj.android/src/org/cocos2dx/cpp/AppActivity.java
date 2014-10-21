@@ -32,6 +32,7 @@ import java.lang.reflect.Method;
 import org.cocos2dx.lib.Cocos2dxActivity;
 
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Build;
@@ -44,6 +45,7 @@ import android.widget.LinearLayout;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
+import com.umeng.social.CCUMSocialController;
 
 public class AppActivity extends Cocos2dxActivity {
 	private static AppActivity _appActiviy;
@@ -114,6 +116,9 @@ public class AppActivity extends Cocos2dxActivity {
 
 		_appActiviy = this;
 
+		
+		// this为Cocos2dxActivity类型, 参数2为描述符,可随意修改.
+		CCUMSocialController.initSocialSDK(this, "com.umeng.social.share");
 	}
 
 	public static void hideAd() {
@@ -164,5 +169,12 @@ public class AppActivity extends Cocos2dxActivity {
 	protected void onDestroy() {
 		adView.destroy();
 		super.onDestroy();
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// 授权回调    
+		CCUMSocialController.onActivityResult(requestCode, resultCode, data);         
+		super.onActivityResult(requestCode, resultCode, data);
 	}
 }

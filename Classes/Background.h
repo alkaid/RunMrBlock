@@ -1,5 +1,5 @@
 #pragma once
-#include "cocos2d.h"
+#include "AppMacro.h"
 #include "BaseLayer.h"
 
 USING_NS_CC;
